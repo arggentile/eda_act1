@@ -1,0 +1,12 @@
+# .dockerignore
+# exclude anything that bloats the build context
+.venv
+__pycache__
+*.py[cod]
+*.egg-info
+dist
+build
+.git
+.gitignore
+*.log
+.DS_Store

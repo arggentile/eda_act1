@@ -1,0 +1,27 @@
+services:
+  #   Servicio con Jupyter Notebook - ideal para aprender interactivamente
+  jupyter:
+    image: jupyter/minimal-notebook:latest
+    container_name: python-jupyter
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks:/home/jovyan/work
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - JUPYTER_TOKEN=aprender   # Token simple para acceder (cámbialo si quieres)
+    restart: unless-stopped
+
+  # Servicio Python "puro" - para ejecutar scripts .py
+  python:
+    image: python:3.12-slim
+    container_name: python-scripts
+    working_dir: /app
+    volumes:
+      - ./scripts:/app
+      # Vinculamos también el requirements.txt aquí
+      - ./requirements.txt:/app/requirements.txt
+    tty: true
+    stdin_open: true
+    # Primero instala pandas y luego se queda escuchando para mantener el contenedor vivo
+    command: sh -c "pip install --no-cache-dir -r requirements.txt && tail -f /dev/null"

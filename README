@@ -1,0 +1,22 @@
+//--FUNCIONANDO--//
+mkdir source
+cp requirements.txt source/requirements.txt
+cd source/
+cp requirements.txt source/requirements.txt
+python -m venv .venv
+source .venv/bin/activate
+pip3 install -r requirements.txt
+dg --version
+dg scaffold project .t .
+dg list plugins
+dg scaffold dagster_sling.SlingReplicationCollectionComponent ingest_files
+
+//-- AL DESCARGAR EL PROYECTo - INICIALIZAR ENTORNo--//
+cd source/
+python -m venv .venv && source .venv/bin/activate
+pip3 install -r requirements.txt
+
+//-- LANZAR SERVER--//
+source .venv/bin/activate
+dg dev
+  

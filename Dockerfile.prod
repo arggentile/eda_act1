@@ -1,0 +1,27 @@
+FROM python:3.10.15-slim-bullseye
+
+RUN apt-get update && \
+    apt-get install -y unzip libaio1 && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN pip config --user set global.progress_bar off
+
+# Add code location code
+WORKDIR /opt/dagster/app
+
+# 1️⃣ copy only the requirement files first – enables better layer caching
+COPY requirements*.txt ./
+
+RUN pip install --no-cache-dir -r requirements.txt \
+ && pip install --no-cache-dir -r requirements-prod.txt
+
+# 2️⃣ copy the source tree and install it in editable mode
+COPY source/ ./source
+RUN pip install --no-cache-dir -e ./source          # <– key fix
+
+# Run dagster code server on port 4000
+EXPOSE 4004
+
+# Use the installed module, not a file that isn't in /opt/dagster/app
+CMD ["dagster", "code-server", "start", "-h", "0.0.0.0", "-p", "4004", "-m", "source.definitions"]
+
