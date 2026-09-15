@@ -1,11 +1,5 @@
 from event import Event
-from collections import deque
-import heapq
-
-
-
-
-
+from event_store import EventStore
 
 evento1 = Event(1, "2023-10-01 10:00:00", "Error", 1, "Error 1005 envio de mercaderia", "Servidor A", "Administrador")
 evento2 = Event(2, "2023-15-01 10:00:00", "Error", 5, "calle cortada.", "Servidor A", "Administrador")
