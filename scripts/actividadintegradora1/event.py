@@ -29,3 +29,6 @@ class Event:
         return (f"ID: {self.id}, Timestamp: {self.timestamp}, "
                 f"Categoría: {self.categoría}, Prioridad: {self.getDescripcionPrioridad(self.prioridad)}, "
                 f"Texto: {self.texto}, Origen: {self.origen}, Destino: {self.destino}")
+
+    def __lt__(self, other):
+        return self.timestamp < other.timestamp
