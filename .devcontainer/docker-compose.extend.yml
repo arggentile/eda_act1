@@ -3,7 +3,7 @@ services:
     build:
       context: ./.devcontainer
       dockerfile: Dockerfile
-    container_name: python-dev
+    container_name: python-dev-eda
     working_dir: /workspace
     volumes:
       - ./:/workspace:cached

@@ -1,0 +1,170 @@
+ 
+Entregables mínimos
+Diseño del sistema (POO + modularidad)
+Definir una arquitectura mínima con clases y módulos: Event, EventStore, Index, Router, TextAnalyzer.
+Incluir docstrings y breve justificación de decisiones de diseño.
+
+Estructuras lineales (TDA + operaciones)
+Implementar y usar al menos dos:
+Stack o Queue (con collections.deque), y
+PriorityQueue (con heapq) para priorizar incidentes por severidad/tiempo.
+Explicar operaciones y complejidad.
+
+Búsqueda/ordenamiento y medición
+Implementar y comparar:
+búsqueda secuencial vs binaria (con bisect para consulta indexada),
+dos ordenamientos entre: inserción / selección / burbuja / quicksort / mergesort,
+comparación con sorted() o list.sort().
+Medir con timeit sobre tamaños crecientes y analizar resultados (tiempo y, si aplica, memoria).
+
+Hashing e índices
+Diseñar un índice por clave (por ejemplo, id, categoría o origen) usando: diccionarios de Python y/o tabla de dispersión implementada (opcional avanzada).
+Explicar colisiones (conceptualmente) y justificar elección.
+
+Síntesis integradora (1 página) Responder:
+¿Qué decisiones de estructura/algoritmo mejoraron el rendimiento y por qué?
+¿Dónde aparece el trade-off "tiempo vs memoria" en el caso?
+¿Cómo se conectan POO + modularidad + estructuras + medición para construir software mantenible?
+
+-------------------------
+Actúa como un Ingeniero de Datos experto en la creación de datasets de alta fidelidad.
+Tu tarea es generar un dataset completo y realista en formato JSON que contenga exactamente 1000 entradas.
+Debes respetar estrictamente las especificaciones técnicas y la estructura que te detallaré a continuación.
+id:  Un identificador único. Utiliza un formato consistente, numero entero. Evita números secuenciales pero si consistentes.
+timestap: Una marca de tiempo en formato . Las fechas deben ser coherentes y lógicas entre sí.
+categoria:  las mismas deben pertenecer ah ("INCENDIO", "ACCIDENTE_VIAL", "ROBO", "EMERGENCIA MEDICA", "DISTURBIO", "DESASTRE_NATURAL")
+prioridad: la misma debe ser un numero entre  0 y 4 ;
+texto: inventa incidentes/eventos que se relacoinen con la categoria
+origen:   letra entre A y H que representa un nodo en un red de rutas
+destino: etra entre A y H que representa un nodo en un red de rutas
+
+### Reglas de Negocio y Restricciones: -
+El contexto o temática de los datos es sobre: un sistema para la atencion de incidentes en seguridad pública.
+
+Formato de Salida: Devuelve ÚNICAMENTE el código JSON limpio dentro de un bloque de código markdown (json ... ). No agregues texto introductorio, ni explicaciones, ni notas al final. El resultado debe ser directamente parseable. -
+
+Sigue este formato exacto:
+[
+ { "id": 10501,
+   "timestamp": "2026-03-15T08:30:22Z",
+   "categoria": "INCENDIO",
+   "prioridad": 0,
+   "texto": "Incendio con menores es edificio de 5 pisos",
+   "texto": "A",
+   "texto": "C",
+ },
+ { "id": 10755,
+   "timestamp": "2026-03-18T08:30:22Z",
+   "categoria": "ROBO",
+   "prioridad": 4,
+   "texto": "Robo en via pública, extraccion de billetera",
+   "texto": "D",
+   "texto": "F",
+ }
+]
+
+
+-----------------
+como pasar de un deque a una lista en python
+
+from collections import deque
+
+# Crear un deque
+mi_deque = deque([1, 2, 3, 4])
+
+# Convertir a lista
+mi_lista = list(mi_deque)
+
+print(mi_lista)  # Resultado: [1, 2, 3, 4]
+
+--------
+y si quiero obtener los prrimeros N de la cola en una lista
+
+from collections import deque
+from itertools import islice
+
+cola = deque(["a", "b", "c", "d", "e"])
+n = 3
+
+# Copia los primeros N elementos sin modificar la cola
+primeros_n = list(islice(cola, n))
+
+print(primeros_n)  # Resultado: ['a', 'b', 'c']
+print(cola)        # La cola sigue igual: deque(['a', 'b', 'c', 'd', 'e'])
+
+
+----------------
+Cuales son los principales metodos de la libreria timeit en python pra medir tiempos
+La librería timeit de Python sirve para medir tiempos de ejecución de fragmentos pequeños de código de forma precisa. Estos son sus métodos principales:
+
+1. timeit.timeit()
+
+Ejecuta un fragmento de código N veces y devuelve el tiempo total en segundos.
+
+python
+import timeit
+
+tiempo = timeit.timeit(stmt="sum(range(100))", number=10000)
+print(tiempo)  # ej: 0.234
+
+Parámetros clave:
+
+stmt: el código a medir (string o callable)
+setup: código que se ejecuta una vez antes (imports, variables)
+number: cuántas veces se repite (por defecto 1.000.000)
+globals: para pasar el contexto actual, útil con globals=globals()
+2. timeit.repeat()
+
+Igual que timeit() pero repite la medición varias veces y devuelve una lista de tiempos. Es más confiable porque permite quedarse con el mínimo (menos afectado por ruido del sistema).
+
+python
+tiempos = timeit.repeat(stmt="sum(range(100))", number=1000, repeat=5)
+print(min(tiempos))
+-------
+
+En que afecta el number si la cantidad de elementos es siempre la misma
+
+Buena pregunta, porque es una confusión muy común. number no cambia lo que hace tu código ni la cantidad de elementos que procesa. Lo que cambia es cuántas veces se ejecuta esa misma operación para poder medir con precisión.
+
+¿Por qué existe number?
+
+El problema es que operaciones pequeñas son demasiado rápidas para medirlas de forma confiable. Si sum(range(100)) tarda 0.000002 segundos, el reloj del sistema no tiene precisión suficiente y el resultado es ruido puro.
+
+La solución de timeit es ejecutar la operación muchas veces y medir el tiempo total, que sí es medible con precisión.
+
+python
+# sum(range(100)) se ejecuta 10.000 veces
+tiempo_total = timeit.timeit("sum(range(100))", number=10000)
+# tiempo_total ≈ 0.02 segundos (medible)
+
+tiempo_por_ejecucion = tiempo_total / 10000
+# ≈ 0.000002 segundos por llamada
+Entonces, ¿en qué te afecta?
+
+En dos cosas prácticas:
+
+1. Precisión de la medición
+
+number muy bajo → resultado poco confiable, dominado por ruido del sistema.
+number alto → promedio mucho más estable.
+
+2. Cuánto tarda el benchmark en terminar
+
+Si tu código tarda 1 segundo por ejecución y ponés number=1000000, vas a esperar 11 días.
+Si tu código tarda 1 microsegundo y ponés number=10, no vas a medir nada útil.
+
+
+-------------
+Como funcionan los metodos sorted() o list.sort() en python:
+
+Cómo funcionan sorted() y list.sort() en Python
+
+Ambos ordenan elementos, pero tienen diferencias importantes.
+
+Diferencia clave
+
+list.sort() ordena la lista in-place (modifica la original) y devuelve None. Solo funciona con listas.
+
+sorted() devuelve una nueva lista ordenada sin modificar el original. Funciona con cualquier iterable (listas, tuplas, strings, diccionarios, sets, generadores).
+
+
