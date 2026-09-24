@@ -8,19 +8,36 @@ from router import Router
 
 
 class EventStore:
-    """ Clase EventStore para almacena eventos y gestionar eventos.
-        Defien una estructura de datos deque la cual almacena el historico de todos los eventos, implementa una cola para 
-        mantener el orden en el que llegaron.
-          
-        Define una estructura eventos_prioritarios, con   heap binario, para priorizar evebntos según severidad/tiempo """
+    """
+       Almacena y gestiona los eventos. Es la fachada del sistema: coordina
+       las estructuras y delega en Index, Router y TextAnalyzer.
+
+        Estructuras usadas y por qué:
+        * eventos (deque, Queue): histórico en orden de llegada. append O(1).
+        * eventos_prioritarios (heap con heapq): próxima atención por
+            severidad y, a igual severidad, el más antiguo. push/pop O(log n), consulta O(1).
+            Se guarda -prioridad para simular un max-heap con el min-heap de heapq.
+        * pila_atendidos (deque, Stack): atendidos en orden LIFO, permite
+            deshacer la última atención. push/pop O(1).
+        * índices (dict): consultas O(1) promedio por id, categoría, prioridad y origen.
+
+        Decisión: al atender un evento se lo quita del heap y se descuenta del
+        Router (deja de ser un incidente activo), pero se conserva en el histórico
+        y en los índices, porque sigue siendo parte del registro de la organización.
+    """
     def __init__(self):
+        #colas , pilas, heap para almacenar y mantener los eventos
         self.eventos_prioritarios = [] # cola de eventos según severidad/tiempo (heap binario).  Se usa -prioridad para simular un max-heap usando el min-heap de heapq 
         self.eventos = deque() # mantiene el orden de ingreso de eventos, para mostrar en orden de llegada
         self.pila_atendidos = deque() # pila de atendidos
         self.cantidad_tareas_atendidas = 0      
-       
+
+        #indices
         #self.indiceCategoria = Index("categoria")  
-        self._indicePrioridad = Index("prioridad")  
+        self._indice_id = Index("id")
+        self._indice_categoria = Index("categoria")
+        self._indice_prioridad = Index("prioridad")
+        self._indice_origen = Index("origen")
         
         self._router = Router() # arma la red de rutas de incidentes
             
@@ -32,8 +49,14 @@ class EventStore:
         evento_prioritario = (prioridad_max, evento.timestamp, evento)        
         heapq.heappush(self.eventos_prioritarios, evento_prioritario)
         self._router.agregar_incidente(evento.origen, evento.destino) # mandamos a la ruta
-        self._indicePrioridad.agregar_evento_indice(evento) # actualizamos indices
         
+        # actualizamos indices
+        self._indice_categoria.agregar_evento_indice(evento)
+        self._indice_prioridad.agregar_evento_indice(evento)
+        self._indice_origen.agregar_evento_indice(evento)
+
+        #self._analyzer = TextAnalyzer()   # NUEVO
+
     def consultar_proxima_atencion(self):
         """Consulta el evento con mayor prioridad sin extraerlo"""
         if not self.eventos_prioritarios:
@@ -81,7 +104,7 @@ class EventStore:
 
     def eventos_por_prioridad(self, prioridad):
         print(f"Eventos prioridad {Event.getDescripcionPrioridad(prioridad)}")
-        events = self._indicePrioridad.devolver_eventos_x_clave(prioridad)
+        events = self._indice_prioridad.devolver_eventos_x_clave(prioridad)
         print(f"{events}")
         if(events is not None):
             for i, event in enumerate(events):
@@ -94,8 +117,8 @@ class EventStore:
         """Camino con menos saltos."""
         return self._router.camino_menos_saltos(origen, destino)
 
-    def procesar_eventos(self, cantidad):
-        """Atiende hasta 'cantidad' eventos por prioridad y los devuelve en una lista."""
+    def procesar_eventos(self, cantidad):   
+        """ Atiende hasta N 'cantidad' de eventos """ 
         procesados = []
         for _ in range(cantidad):
             evento = self.procesar_pedido()
@@ -103,6 +126,24 @@ class EventStore:
                 break
             procesados.append(evento)
         return procesados
-    def primeros_n(self, cantidadElementos):
-        """ Retorna una lista con N cantidad de elementos, implementado con el objetivo de medir tiempos de ejecucion y memoria"""
-        return list(islice(self.eventos, cantidadElementos))
+
+    def ultimo_atendido(self):
+        """Tope de la pila sin sacarlo. O(1)."""
+        if self.pila_atendidos:
+            return self.pila_atendidos[-1] 
+        else: 
+            return None
+
+    # NUEVO
+    def buscar_por_id(self, id_evento):
+        """Evento con ese id o None. O(1) promedio (hash)."""
+        return self._indice_id.devolver_eventos_x_clave(id_evento)
+
+    # NUEVO
+    def eventos_por_categoria(self, categoria):
+        return self._indice_categoria.devolver_eventos_x_clave(categoria)
+
+    # NUEVO
+    def eventos_por_origen(self, origen):
+        return self._indice_origen.devolver_eventos_x_clave(origen)
+    

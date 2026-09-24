@@ -24,13 +24,13 @@ def cargar_dataset_eventos(name_files):
     ]
     return eventos
     
-def busqueda_secuenical(lista_eventos, llave_id):
+def busqueda_secuencial(lista_eventos, llave_id):
     """ Busqueda secuencial: busca un determinado evento en una lista, la busqueda se realiza
     mediante el identificaodr ID del evento.
     Devuelve la posicion en la lista del evento, junto con el evento """
     for posicion, elEvento in enumerate(lista_eventos):
         if elEvento.id == llave_id:
-            return posicion, elEvento
+            return posicion
     return None
 
 
@@ -86,8 +86,9 @@ def bubble_sort(lista_eventos):
                 mnro =   lista_eventos[j]
                 lista_eventos[j] = lista_eventos[j+1]
                 lista_eventos[j+1] = mnro
-                #lista_eventos[j], lista_eventos[j + 1] = lista_eventos[j + 1], lista_eventos[j]
-
+                hubo_intercambio = True
+        if not hubo_intercambio:
+            break
 
 def ordenar_sorted(lista_eventos):
     """ Ordena una lista de eventos mediante su clave ID con el metodo sorted """

@@ -2,7 +2,7 @@ services:
   #   Servicio con Jupyter Notebook - ideal para aprender interactivamente
   jupyter:
     image: jupyter/minimal-notebook:latest
-    container_name: python-jupyter-eda
+    #container_name: python-jupyter-eda
     ports:
       - "8888:8888"
     volumes:
@@ -15,7 +15,7 @@ services:
   # Servicio Python "puro" - para ejecutar scripts .py
   python:
     image: python:3.12-slim
-    container_name: python-scripts-eda
+    #container_name: python-scripts-eda
     working_dir: /app
     volumes:
       - ./scripts:/app
