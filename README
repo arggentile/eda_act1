@@ -1,0 +1,142 @@
+Caso de aplicación para la Evaluación Integradora
+Plataforma de análisis de incidentes y rutas
+El siguiente caso se propone como escenario común para las dos partes de la evaluación integradora. A partir de este contexto, cada parte del trabajo abordará distintos problemas algorítmicos y estructuras estudiadas durante la materia.
+Una organización procesa eventos (incidentes) que contienen los siguientes campos: id, timestamp, categoría, prioridad, texto (descripción), origen y destino. 
+
+Con esta información se busca desarrollar herramientas que permitan analizar los incidentes y apoyar la toma de decisiones.
+
+En este marco, el sistema debe permitir:
+Almacenar y consultar eventos de forma eficiente,
+Buscar patrones en textos (alertas),
+Priorizar atención (colas/heap),
+Analizar red de rutas (grafos) y optimizar decisiones,
+
+Estimar costos y justificar decisiones con complejidad y mediciones,
+Y resguardar información sensible mediante encriptación (RSA a nivel demostrativo).
+La implementación debe realizarse en Python, utilizando las herramientas y enfoques trabajados durante el cursado, 
+e incluir pruebas y mediciones reproducibles que permitan verificar el funcionamiento de las soluciones propuestas.
+
+Entregables mínimos
+Diseño del sistema (POO + modularidad)
+Definir una arquitectura mínima con clases y módulos: Event, EventStore, Index, Router, TextAnalyzer.
+Incluir docstrings y breve justificación de decisiones de diseño.
+ 
+Estructuras lineales (TDA + operaciones)
+Implementar y usar al menos dos:
+Stack o Queue (con collections.deque), y
+PriorityQueue (con heapq) para priorizar incidentes por severidad/tiempo.
+Explicar operaciones y complejidad.
+ 
+Búsqueda/ordenamiento y medición
+Implementar y comparar:
+búsqueda secuencial vs binaria (con bisect para consulta indexada),
+dos ordenamientos entre: inserción / selección / burbuja / quicksort / mergesort,
+comparación con sorted() o list.sort().
+Medir con timeit sobre tamaños crecientes y analizar resultados (tiempo y, si aplica, memoria).
+ 
+Hashing e índices
+Diseñar un índice por clave (por ejemplo, id, categoría o origen) usando: diccionarios de Python y/o tabla de dispersión implementada (opcional avanzada).
+Explicar colisiones (conceptualmente) y justificar elección.
+ 
+Síntesis integradora (1 página) Responder:
+¿Qué decisiones de estructura/algoritmo mejoraron el rendimiento y por qué?
+¿Dónde aparece el trade-off "tiempo vs memoria" en el caso?
+¿Cómo se conectan POO + modularidad + estructuras + medición para construir software mantenible?
+ 
+ANEXO obligatorio: Registro del uso de IAG según indicaciones generales (diálogos, fecha, herramienta y reflexión ética).
+
+-------------------------
+
+Como funcionan los metodos sorted() o list.sort() en python
+
+Diferencia clave
+
+list.sort() ordena la lista in-place (modifica la original) y devuelve None. Solo funciona con listas.
+
+sorted() devuelve una nueva lista ordenada sin modificar el original. Funciona con cualquier iterable (listas, tuplas, strings, diccionarios, sets, generadores).
+python
+# list.sort() - modifica la lista original
+numeros = [3, 1, 4, 1, 5, 9, 2, 6]
+numeros.sort()
+print(numeros)  # [1, 1, 2, 3, 4, 5, 6, 9]
+
+# sorted() - devuelve una nueva lista
+numeros = [3, 1, 4, 1, 5, 9, 2, 6]
+ordenados = sorted(numeros)
+print(ordenados)  # [1, 1, 2, 3, 4, 5, 6, 9]
+print(numeros)    # [3, 1, 4, 1, 5, 9, 2, 6] (sin cambios)
+
+Parámetros
+
+Ambos aceptan los mismos dos parámetros opcionales:
+
+reverse: booleano para orden descendente.
+
+python
+sorted([3, 1, 4, 1, 5], reverse=True)  # [5, 4, 3, 1, 1]
+
+key: función que se aplica a cada elemento para decidir el criterio de orden.
+
+python
+palabras = ["banana", "kiwi", "manzana", "pera"]
+sorted(palabras, key=len)  # ['kiwi', 'pera', 'banana', 'manzana']
+
+# Ordenar tuplas por el segundo elemento
+datos = [("Ana", 30), ("Luis", 25), ("Eva", 28)]
+sorted(datos, key=lambda x: x[1])
+# [('Luis', 25), ('Eva', 28), ('Ana', 30)]
+
+El algoritmo: Timsort
+
+Por debajo, ambos usan Timsort, un algoritmo híbrido creado por Tim Peters en 2002 que combina merge sort e insertion sort. Aprovecha secuencias ya ordenadas ("runs") que aparecen naturalmente en los datos reales.
+
+Características:
+
+Estable: elementos con la misma clave mantienen su orden relativo original.
+Complejidad: O(n log n) en el peor caso, O(n) en el mejor (datos casi ordenados).
+Muy eficiente con datos parciales o previamente ordenados.
+Ejemplo de estabilidad
+python
+estudiantes = [("Ana", "B"), ("Luis", "A"), ("Eva", "B"), ("Juan", "A")]
+sorted(estudiantes, key=lambda x: x[1])
+# [('Luis', 'A'), ('Juan', 'A'), ('Ana', 'B'), ('Eva', 'B')]
+# Luis va antes que Juan porque estaba antes en la lista original
+¿Cuál usar?
+
+Usa list.sort() cuando no necesites conservar el orden original y trabajes con una lista (ahorra memoria). Usa sorted() cuando quieras preservar el original, o cuando trabajes con otro iterable como una tupla o un diccionario.
+
+Se pueden usar sobre listas de diccionarios?
+
+Pero sí puede ordenar listas que contengan dicts o instancias de clases
+
+Aquí está el matiz: si tienes una lista de diccionarios o una lista de objetos, list.sort() funciona perfectamente. Solo necesitas indicar con key qué atributo o clave usar para comparar, porque Python no sabe por sí mismo cómo comparar dos diccionarios o dos objetos personalizados.
+
+Lista de diccionarios:
+
+python
+personas = [
+    {"nombre": "Ana", "edad": 30},
+    {"nombre": "Luis", "edad": 25},
+    {"nombre": "Eva", "edad": 28},
+]
+personas.sort(key=lambda p: p["edad"])
+
+
+Tengo que realizar mediciones de tiempo en python; como copio una lista de elementos (diccionarios)
+
+Para realizar mediciones de tiempo precisas mientras manipulas estructuras de datos, la forma correcta de copiar una lista de diccionarios en Python es utilizando la función copy.deepcopy() del módulo nativo copy.Dado que tu lista contiene elementos mutables (los diccionarios), si usas un método de copia superficial como lista.copy() o lista[:], solo duplicarás la estructura de la lista, pero los diccionarios internos seguirán siendo exactamente los mismos objetos en memoria. Cualquier modificación interna alteraría los datos originales y arruinaría la limpieza de tus pruebas de rendimiento.A continuación se detallan las dos alternativas principales para medir su rendimiento:1. La opción segura: copy.deepcopy (Copia Profunda)Crea una lista completamente nueva y duplica recursivamente cada diccionario interno. Es el enfoque estándar y más seguro, aunque suele ser más lent
+
+pythonimport copy
+import time
+
+lista_original = [{"id": 1, "valores": [10, 20]}, {"id": 2, "valores": [30, 40]}]
+
+# Medición del tiempo de copia profunda
+inicio = time.perf_counter()
+nueva_lista = copy.deepcopy(lista_original)
+fin = time.perf_counter()
+
+print(f"Tiempo de ejecución: {fin - inicio:.6f} segundos"
+
+2. La opción optimizada: List Comprehension (Copia por comprensión)Si buscas reducir el impacto de la copia en tus mediciones de tiempo y optimizar la velocidad, una comprensión de lista combinada con .copy() suele ser considerablemente más rápida que deepcopy. Funciona perfectamente siempre y cuando los valores dentro de los diccionarios no sean a su vez otras estructuras mutables (como sublistas o subdiccionarios)
+

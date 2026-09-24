@@ -1,32 +1,6 @@
- 
-Entregables mínimos
-Diseño del sistema (POO + modularidad)
-Definir una arquitectura mínima con clases y módulos: Event, EventStore, Index, Router, TextAnalyzer.
-Incluir docstrings y breve justificación de decisiones de diseño.
+------------------------
+--Peticion para armar dataset de datos --
 
-Estructuras lineales (TDA + operaciones)
-Implementar y usar al menos dos:
-Stack o Queue (con collections.deque), y
-PriorityQueue (con heapq) para priorizar incidentes por severidad/tiempo.
-Explicar operaciones y complejidad.
-
-Búsqueda/ordenamiento y medición
-Implementar y comparar:
-búsqueda secuencial vs binaria (con bisect para consulta indexada),
-dos ordenamientos entre: inserción / selección / burbuja / quicksort / mergesort,
-comparación con sorted() o list.sort().
-Medir con timeit sobre tamaños crecientes y analizar resultados (tiempo y, si aplica, memoria).
-
-Hashing e índices
-Diseñar un índice por clave (por ejemplo, id, categoría o origen) usando: diccionarios de Python y/o tabla de dispersión implementada (opcional avanzada).
-Explicar colisiones (conceptualmente) y justificar elección.
-
-Síntesis integradora (1 página) Responder:
-¿Qué decisiones de estructura/algoritmo mejoraron el rendimiento y por qué?
-¿Dónde aparece el trade-off "tiempo vs memoria" en el caso?
-¿Cómo se conectan POO + modularidad + estructuras + medición para construir software mantenible?
-
--------------------------
 Actúa como un Ingeniero de Datos experto en la creación de datasets de alta fidelidad.
 Tu tarea es generar un dataset completo y realista en formato JSON que contenga exactamente 1000 entradas.
 Debes respetar estrictamente las especificaciones técnicas y la estructura que te detallaré a continuación.

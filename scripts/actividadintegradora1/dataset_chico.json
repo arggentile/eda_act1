@@ -1,0 +1,272 @@
+[
+  {
+    "id": 743442,
+    "timestamp": "2026-01-01T03:47:01Z",
+    "categoria": "EMERGENCIA MEDICA",
+    "prioridad": 1,
+    "texto": "Convulsiones en via publica, persona no responde a estimulos",
+    "origen": "D",
+    "destino": "E"
+  },
+  {
+    "id": 869099,
+    "timestamp": "2026-01-01T05:19:49Z",
+    "categoria": "ROBO",
+    "prioridad": 1,
+    "texto": "Asalto a delivery en la puerta de domicilio particular",
+    "origen": "B",
+    "destino": "H"
+  },
+  {
+    "id": 613766,
+    "timestamp": "2026-01-01T15:45:49Z",
+    "categoria": "ACCIDENTE_VIAL",
+    "prioridad": 0,
+    "texto": "Camioneta impactó contra vidriera de comercio, sin heridos",
+    "origen": "A",
+    "destino": "D"
+  },
+  {
+    "id": 217963,
+    "timestamp": "2026-01-01T20:05:22Z",
+    "categoria": "DESASTRE_NATURAL",
+    "prioridad": 4,
+    "texto": "Sequia prolongada afectando suministro de agua potable en la zona",
+    "origen": "G",
+    "destino": "F"
+  },
+  {
+    "id": 727497,
+    "timestamp": "2026-01-02T06:14:54Z",
+    "categoria": "INCENDIO",
+    "prioridad": 0,
+    "texto": "Incendio en pastizales sobre banquina de ruta provincial",
+    "origen": "E",
+    "destino": "H"
+  },
+  {
+    "id": 568623,
+    "timestamp": "2026-01-02T09:02:53Z",
+    "categoria": "DISTURBIO",
+    "prioridad": 1,
+    "texto": "Disturbio en comedor comunitario por reparto de alimentos",
+    "origen": "A",
+    "destino": "D"
+  },
+  {
+    "id": 900844,
+    "timestamp": "2026-01-03T03:40:53Z",
+    "categoria": "EMERGENCIA MEDICA",
+    "prioridad": 0,
+    "texto": "Accidente domestico con quemaduras en tronco y brazos",
+    "origen": "F",
+    "destino": "A"
+  },
+  {
+    "id": 944884,
+    "timestamp": "2026-01-03T06:57:19Z",
+    "categoria": "EMERGENCIA MEDICA",
+    "prioridad": 0,
+    "texto": "Paciente psiquiatrico con crisis, riesgo autolesivo",
+    "origen": "F",
+    "destino": "G"
+  },
+  {
+    "id": 857458,
+    "timestamp": "2026-01-03T12:34:22Z",
+    "categoria": "EMERGENCIA MEDICA",
+    "prioridad": 1,
+    "texto": "Herida cortante profunda en cocina domiciliaria, sangrado activo",
+    "origen": "E",
+    "destino": "F"
+  },
+  {
+    "id": 776536,
+    "timestamp": "2026-01-03T19:01:24Z",
+    "categoria": "DISTURBIO",
+    "prioridad": 2,
+    "texto": "Disturbio en comedor comunitario por reparto de alimentos",
+    "origen": "G",
+    "destino": "H"
+  },
+  {
+    "id": 990022,
+    "timestamp": "2026-01-04T00:54:59Z",
+    "categoria": "DISTURBIO",
+    "prioridad": 2,
+    "texto": "Grupo de personas danando mobiliario urbano en plaza publica",
+    "origen": "D",
+    "destino": "H"
+  },
+  {
+    "id": 497282,
+    "timestamp": "2026-01-04T14:49:34Z",
+    "categoria": "INCENDIO",
+    "prioridad": 3,
+    "texto": "Incendio en transformador electrico, corte de energia en la zona",
+    "origen": "D",
+    "destino": "H"
+  },
+  {
+    "id": 528317,
+    "timestamp": "2026-01-04T18:07:41Z",
+    "categoria": "DISTURBIO",
+    "prioridad": 3,
+    "texto": "Alteracion del orden en velatorio, familias enfrentadas",
+    "origen": "F",
+    "destino": "A"
+  },
+  {
+    "id": 280902,
+    "timestamp": "2026-01-05T11:00:39Z",
+    "categoria": "ROBO",
+    "prioridad": 2,
+    "texto": "Asalto en linea de colectivo urbano, pasajeros despojados de pertenencias",
+    "origen": "F",
+    "destino": "H"
+  },
+  {
+    "id": 20644,
+    "timestamp": "2026-01-06T17:33:11Z",
+    "categoria": "ROBO",
+    "prioridad": 4,
+    "texto": "Intento de robo frustrado por vecinos, sospechoso detenido",
+    "origen": "E",
+    "destino": "F"
+  },
+  {
+    "id": 592144,
+    "timestamp": "2026-01-08T12:39:55Z",
+    "categoria": "DISTURBIO",
+    "prioridad": 1,
+    "texto": "Pelea entre vecinos por conflicto de medianera, uno herido leve",
+    "origen": "G",
+    "destino": "D"
+  },
+  {
+    "id": 841450,
+    "timestamp": "2026-01-08T13:32:11Z",
+    "categoria": "ACCIDENTE_VIAL",
+    "prioridad": 2,
+    "texto": "Choque de auto contra arbol en avenida, airbag desplegado",
+    "origen": "H",
+    "destino": "D"
+  },
+  {
+    "id": 265123,
+    "timestamp": "2026-01-08T14:03:03Z",
+    "categoria": "INCENDIO",
+    "prioridad": 0,
+    "texto": "Incendio forestal en zona periurbana avanzando hacia viviendas",
+    "origen": "G",
+    "destino": "F"
+  },
+  {
+    "id": 792169,
+    "timestamp": "2026-01-08T21:57:19Z",
+    "categoria": "ROBO",
+    "prioridad": 2,
+    "texto": "Asalto a delivery en la puerta de domicilio particular",
+    "origen": "F",
+    "destino": "D"
+  },
+  {
+    "id": 331517,
+    "timestamp": "2026-01-09T04:03:12Z",
+    "categoria": "DISTURBIO",
+    "prioridad": 2,
+    "texto": "Escandalo domestico con gritos y ruidos, denuncia de vecinos",
+    "origen": "H",
+    "destino": "C"
+  },
+  {
+    "id": 135362,
+    "timestamp": "2026-01-10T04:34:06Z",
+    "categoria": "ROBO",
+    "prioridad": 1,
+    "texto": "Robo con violencia en cajero automatico, victima golpeada",
+    "origen": "D",
+    "destino": "C"
+  },
+  {
+    "id": 236895,
+    "timestamp": "2026-01-10T11:39:40Z",
+    "categoria": "DESASTRE_NATURAL",
+    "prioridad": 4,
+    "texto": "Crecida repentina de rio, familias aisladas en zona rural",
+    "origen": "C",
+    "destino": "B"
+  },
+  {
+    "id": 883074,
+    "timestamp": "2026-01-10T15:01:32Z",
+    "categoria": "DESASTRE_NATURAL",
+    "prioridad": 0,
+    "texto": "Sismo de baja intensidad, evacuacion preventiva de edificios",
+    "origen": "E",
+    "destino": "A"
+  },
+  {
+    "id": 24835,
+    "timestamp": "2026-01-10T17:07:01Z",
+    "categoria": "ACCIDENTE_VIAL",
+    "prioridad": 1,
+    "texto": "Camioneta impactó contra vidriera de comercio, sin heridos",
+    "origen": "C",
+    "destino": "D"
+  },
+  {
+    "id": 590238,
+    "timestamp": "2026-01-11T07:19:59Z",
+    "categoria": "DESASTRE_NATURAL",
+    "prioridad": 0,
+    "texto": "Crecida repentina de rio, familias aisladas en zona rural",
+    "origen": "A",
+    "destino": "B"
+  },
+  {
+    "id": 925112,
+    "timestamp": "2026-01-11T11:20:43Z",
+    "categoria": "ROBO",
+    "prioridad": 3,
+    "texto": "Robo en comercio de electronica durante horario nocturno",
+    "origen": "H",
+    "destino": "A"
+  },
+  {
+    "id": 203319,
+    "timestamp": "2026-01-11T12:36:33Z",
+    "categoria": "INCENDIO",
+    "prioridad": 1,
+    "texto": "Incendio en depósito de neumaticos, columna de humo toxico",
+    "origen": "H",
+    "destino": "C"
+  },
+  {
+    "id": 872050,
+    "timestamp": "2026-01-11T17:15:20Z",
+    "categoria": "INCENDIO",
+    "prioridad": 3,
+    "texto": "Incendio en transformador electrico, corte de energia en la zona",
+    "origen": "H",
+    "destino": "A"
+  },
+  {
+    "id": 166445,
+    "timestamp": "2026-01-12T06:31:51Z",
+    "categoria": "INCENDIO",
+    "prioridad": 1,
+    "texto": "Incendio en camion de carga sobre autopista, corte total",
+    "origen": "A",
+    "destino": "C"
+  },
+  {
+    "id": 595181,
+    "timestamp": "2026-01-12T13:43:48Z",
+    "categoria": "DISTURBIO",
+    "prioridad": 1,
+    "texto": "Grupo de personas danando mobiliario urbano en plaza publica",
+    "origen": "D",
+    "destino": "A"
+  }
+]
