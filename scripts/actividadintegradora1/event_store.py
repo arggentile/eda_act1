@@ -1,45 +1,24 @@
 import heapq
 from collections import deque
-from itertools import islice
 
 from event import Event
-from index import Index
-from router import Router
 
 
 class EventStore:
     """
-       Almacena y gestiona los eventos. Es la fachada del sistema: coordina
-       las estructuras y delega en Index, Router y TextAnalyzer.
-
-        Estructuras usadas y por qué:
-        * eventos (deque, Queue): histórico en orden de llegada. append O(1).
-        * eventos_prioritarios (heap con heapq): próxima atención por
-            severidad y, a igual severidad, el más antiguo. push/pop O(log n), consulta O(1).
-            Se guarda -prioridad para simular un max-heap con el min-heap de heapq.
-        * pila_atendidos (deque, Stack): atendidos en orden LIFO, permite
-            deshacer la última atención. push/pop O(1).
-        * índices (dict): consultas O(1) promedio por id, categoría, prioridad y origen.
-
-        Decisión: al atender un evento se lo quita del heap y se descuenta del
-        Router (deja de ser un incidente activo), pero se conserva en el histórico
-        y en los índices, porque sigue siendo parte del registro de la organización.
+    Almacena y gestiona los eventos, cola priridad para atencion prioritaria, historico de eventos y pila de atendidos.
+       
+    eventos: (deque, Queue): histórico en orden de llegada. append O(1).
+    eventos_prioritarios: (heap con heapq): próxima atención por severidad y, a igual severidad, el más antiguo. push/pop O(log n), consulta O(1).
+                        Se guarda -prioridad para simular un max-heap con el min-heap de heapq.
+    pila_atendidos: (deque, Stack): atendidos en orden LIFO, permite deshacer la última atención. push/pop O(1).
     """
     def __init__(self):
         #colas , pilas, heap para almacenar y mantener los eventos
         self.eventos_prioritarios = [] # cola de eventos según severidad/tiempo (heap binario).  Se usa -prioridad para simular un max-heap usando el min-heap de heapq 
         self.eventos = deque() # mantiene el orden de ingreso de eventos, para mostrar en orden de llegada
         self.pila_atendidos = deque() # pila de atendidos
-        self.cantidad_tareas_atendidas = 0      
-
-        #indices
-        #self.indiceCategoria = Index("categoria")  
-        self._indice_id = Index("id")
-        self._indice_categoria = Index("categoria")
-        self._indice_prioridad = Index("prioridad")
-        self._indice_origen = Index("origen")
-        
-        self._router = Router() # arma la red de rutas de incidentes
+        self.__cantidad_atenciones = 0         
             
     def agregar_evento(self, evento: Event):
         """ Agrega un evento a la lista de eventos del historico y a la cola de eventos prioritarios """
@@ -48,84 +27,39 @@ class EventStore:
         prioridad_max = -1 * evento.prioridad
         evento_prioritario = (prioridad_max, evento.timestamp, evento)        
         heapq.heappush(self.eventos_prioritarios, evento_prioritario)
-        self._router.agregar_incidente(evento.origen, evento.destino) # mandamos a la ruta
         
-        # actualizamos indices
-        self._indice_categoria.agregar_evento_indice(evento)
-        self._indice_prioridad.agregar_evento_indice(evento)
-        self._indice_origen.agregar_evento_indice(evento)
-
-        #self._analyzer = TextAnalyzer()   # NUEVO
 
     def consultar_proxima_atencion(self):
         """Consulta el evento con mayor prioridad sin extraerlo"""
         if not self.eventos_prioritarios:
             print("No existen eventos.")
             return None
-        
-        prioridad, time, evento = self.eventos_prioritarios[0]
+
+        print(self.eventos_prioritarios[0])
+        evento = self.eventos_prioritarios[0][2]  # Extrae el evento del heap
         return evento
 
    
-    def procesar_pedido(self):           
+    def procesar_evento(self):           
         """ Agarra un pedido para ser procesado, solo lo quita de la cola de prioridades"""
-        """ Analizar s en un futuro no deberiamos eliminarlo de los indices"""
         if not self.eventos_prioritarios:
             print("Cola vacia")
             return None
         
-        self.cantidad_tareas_atendidas+=1        
+        self.__cantidad_atenciones+=1        
         prioridad, time, evento = heapq.heappop(self.eventos_prioritarios)       
         self.pila_atendidos.append(evento) 
-        self._router.eliminar_incidente(evento.origen, evento.destino)
         return evento
     
         
     def mostrar_eventos(self):
-        """ Muestra la información de todos los eventos almacenados """
+        """ Muestra la información de todos los eventos almacenados. Recorre total O(n) """
         for evento in self.eventos:
             print(evento.info())
 
-
-    def mostrar_rutas_incidentes(self):
-        """ Muestra info de las rutas """
-        print("Red Rutas de Incidentes: ")
-        print(f"{self._router.mostrar()}")
-
-    def camino_menos_saltos(self, origen, destino):
-        # muestra el camino más corto entre Orgien y Destino
-        return self._router.camino_menos_saltos(origen, destino)    
-
-    def mostrar_info_eventos(self):
-        """ Muestra la información de todos los eventos almacenados """
-        print("información delos eventos: ")
-        for evento in self.eventos:
-            print(f"{evento.info()}\n")
-
-    def eventos_por_prioridad(self, prioridad):
-        print(f"Eventos prioridad {Event.getDescripcionPrioridad(prioridad)}")
-        events = self._indice_prioridad.devolver_eventos_x_clave(prioridad)
-        print(f"{events}")
-        if(events is not None):
-            for i, event in enumerate(events):
-                print(f"{event.info()}")
+    def cantidad_atenciones(self):
+        return self.__cantidad_atenciones          
         
-    def pasar_a_lista(self):
-        return list(self.eventos)
-
-    def camino_mas_corto(self, origen, destino):
-        """Camino con menos saltos."""
-        return self._router.camino_menos_saltos(origen, destino)
-
-    def procesar_eventos(self, cantidad):   
-        """ Atiende hasta N 'cantidad' de eventos """ 
-        procesados = []
-        for _ in range(cantidad):
-            evento = self.procesar_pedido()
-            if evento is None:
-                break
-            procesados.append(evento)
-        return procesados
 
     def ultimo_atendido(self):
         """Tope de la pila sin sacarlo. O(1)."""
@@ -134,16 +68,65 @@ class EventStore:
         else: 
             return None
 
-    # NUEVO
-    def buscar_por_id(self, id_evento):
-        """Evento con ese id o None. O(1) promedio (hash)."""
-        return self._indice_id.devolver_eventos_x_clave(id_evento)
+    def pasar_a_lista(self):
+        return list(self.eventos)
 
-    # NUEVO
-    def eventos_por_categoria(self, categoria):
-        return self._indice_categoria.devolver_eventos_x_clave(categoria)
 
-    # NUEVO
-    def eventos_por_origen(self, origen):
-        return self._indice_origen.devolver_eventos_x_clave(origen)
+if __name__ == "__main__":
+    eventos = []
+    eventos.append( Event(743442, "2026-01-01T03:47:01Z",  "EMERGENCIA MEDICA", 3, "Convulsiones en via publica, persona no responde a estimulos", "D", "E"))
+    eventos.append( Event(869099, "2026-01-02T10:13:49Z",  "ROBO", 5, "Asalto a delivery en la puerta de domicilio particular", "A", "D"))
+    eventos.append( Event(129299, "2026-01-12T05:15:49Z",  "EMERGENCIA MEDICA", 5, "Disturbio en comedor comunitario por reparto de alimentos", "A", "B") )
+    eventos.append( Event(280902, "2026-04-11T05:11:11Z",  "ROBO", 3, "Paciente psiquiatrico con crisis, riesgo autolesivo", "E", "A") )
+    eventos.append( Event(497282, "2026-02-01T15:10:49Z",  "EMERGENCIA MEDICA", 3, "Disturbio en comedor comunitario por reparto de alimentos", "B", "C") )
+    eventos.append( Event(857458, "2026-05-16T22:22:49Z",  "EMERGENCIA MEDICA", 2, "Asalto a delivery en la puerta de domicilio particular", "A", "E") )
+    
+    eventos.append( Event(953412, "2026-01-01T13:47:01Z",  "Accidente de Tránsito", 3, "Convulsiones en via publica, persona no responde a estimulos", "A", "D"))
+    eventos.append( Event(112095, "2026-01-01T14:19:49Z",  "Disturbio", 5, "Asalto a delivery en la puerta de domicilio particular", "A", "D"))
+    eventos.append( Event(326589, "2026-01-01T20:17:49Z",  "EMERGENCIA MEDICA", 5, "Disturbio en comedor comunitario por reparto de alimentos", "D", "A") )
+    eventos.append( Event(110066, "2026-01-01T22:15:49Z",  "Accidente de Tránsito", 3, "Paciente psiquiatrico con crisis, riesgo autolesivo", "C", "E") )
+    eventos.append( Event(151161, "2026-01-01T23:22:49Z",  "EMERGENCIA MEDICA", 3, "Disturbio en comedor comunitario por reparto de alimentos", "E", "B") )
+    eventos.append( Event(166998, "2026-01-01T05:19:49Z",  "Disturbio", 2, "Asalto a delivery en la puerta de domicilio particular", "A", "E") )
+    
+       
+    event_store = EventStore()
+    for evento in eventos:
+        event_store.agregar_evento(evento)
+    
+    event_store.mostrar_eventos()
+
+    print("\n Cantidad de eventos atendidos: ")
+    print(event_store.cantidad_atenciones())
+
+    print("\n -------------------------------------------------------------")
+    print("\n Próximo evento a atender: ")
+    el_evento = event_store.consultar_proxima_atencion()
+    print(el_evento.info())
+    
+    event_store.procesar_evento()
+    print("\n Cantidad de eventos atendidos: ")
+    print(event_store.cantidad_atenciones())
+
+    print("\n -------------------------------------------------------------")
+    print("\n Próximo evento a atender: ")
+    el_evento = event_store.consultar_proxima_atencion()
+    print(el_evento.info())
+    
+    event_store.procesar_evento()
+    print("\n Cantidad de eventos atendidos: ")
+    print(event_store.cantidad_atenciones())
+
+    print("\n -------------------------------------------------------------")
+    print("\n Próximo evento a atender: ")
+    el_evento = event_store.consultar_proxima_atencion()
+    print(el_evento.info())
+    
+    event_store.procesar_evento()
+    print("\n Cantidad de eventos atendidos: ")
+    print(event_store.cantidad_atenciones())    
+
+    print("\n --------------- Ultimo Atendido ---------------------")
+    ultima_atencion = event_store.ultimo_atendido()
+    print(ultima_atencion.info())
+        
     

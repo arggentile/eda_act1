@@ -23,11 +23,14 @@ def cargar_dataset_eventos(name_files):
         for item in datos
     ]
     return eventos
-    
+
+# metodos de busqueda, buscan una llave ID dentro de una lista de "Evetos""    
 def busqueda_secuencial(lista_eventos, llave_id):
-    """ Busqueda secuencial: busca un determinado evento en una lista, la busqueda se realiza
-    mediante el identificaodr ID del evento.
-    Devuelve la posicion en la lista del evento, junto con el evento """
+    """ 
+    Busca un determinado evento mediante una llave en una lista.
+    En caso de exito, devuelve la posicion en la lista del evento, caso contrario devuelve None.
+    Complejidad: O(n). Mejor caso O(1), pero caso O(n), promedio: O(n/2):
+    """
     for posicion, elEvento in enumerate(lista_eventos):
         if elEvento.id == llave_id:
             return posicion
@@ -36,9 +39,9 @@ def busqueda_secuencial(lista_eventos, llave_id):
 
 def busqueda_binaria(lista_eventos, llave_id):
     """ 
-    Busqueda binaria: busca un determinado evento en una lista previamente ordenada, la busqueda se realiza
-    mediante el identificaodr ID del evento.
-    Devuelve la posicion en la lista del evento 
+    Busca un determinado evento mediante una llave en una lista previamente ordenada.
+    En caso de exito, devuelve la posicion en la lista del evento, caso contrario devuelve None.
+    Complejidad: O(log n). Mejor caso O(1), pero caso O(log2 n), promedio: O(log n):
     """
     inicio = 0
     fin = len(lista_eventos) - 1
@@ -55,17 +58,23 @@ def busqueda_binaria(lista_eventos, llave_id):
     return None        
 
 def busqueda_binaria_bisect(lista_eventos, llave_id):
-    """
-    Búsqueda binaria con bisect sobre una lista ORDENADA por id.
-    Complejidad: O(log n), no crea listas auxiliares.
-    Devuelve la posición del evento o None si no existe.
+    """ 
+    Busca (binaria con bisect) un determinado evento mediante una llave en una lista previamente ordenada.
+    En caso de exito, devuelve la posicion en la lista del evento, caso contrario devuelve None.
+    Complejidad: O(log n). Mejor caso O(1), pero caso O(log2 n), promedio: O(log n)
     """
     posicion = bisect_left(lista_eventos, llave_id, key=lambda e: e.id)
     if posicion < len(lista_eventos) and lista_eventos[posicion].id == llave_id:
         return posicion
     return None
 
+
+# metodos de ordenamiento, ordenan una lista de "Eventos" mediante su llave id
 def select_order(lista_eventos):
+    """ Ordena la lista de eventos por id, in-place.
+    Complejidad: O(n²) en peor y caso promedio, O(n) en el mejor caso-lista ordenada
+    """
+    
     tamanio_lista = len(lista_eventos)
     for i in range(tamanio_lista):
         min_inx = i
@@ -81,6 +90,7 @@ def bubble_sort(lista_eventos):
     """
     tamanio_lista = len(lista_eventos)
     for i in range(tamanio_lista):
+        hubo_intercambio = False 
         for j in range(0, tamanio_lista - i -1):
             if (lista_eventos[j].id > lista_eventos[j+1].id):
                 mnro =   lista_eventos[j]

@@ -59,10 +59,15 @@ def procesar_n_eventos(store):
     if len(procesados) < int(cantidad):
         print(f"Solo había {len(procesados)} eventos pendientes.")
 
-def mostrar_estadisticas():
-    """ carga el dataset de pruebas pára medicoin con 1000 entradas y llama al mnetodo para mostrar estaditicas de medion de tiempo"""   
+def mostrar_estadisticas_busqueda(eventos):
+    """ carga el dataset de pruebas pára medicoin con 1000 entradas y llama al metodo para mostrar estaditicas de medion de tiempo"""   
+    eventos  = cargar_dataset_eventos("dataset.json") # dataset inicial con 100 muestras aleatorias   
+    medir_busquedas(eventos)  
+
+def mostrar_estadisticas_ordenamiento(eventos):
+    """ carga el dataset de pruebas pára medicoin con 1000 entradas y llama al metodo para mostrar estaditicas de medion de tiempo"""   
     eventos  = cargar_dataset_eventos("dataset.json") # dataset inicial con 100 muestras aleatorias
-    motrar_mediciones(eventos)
+    medir_ordenamientos(eventos)       
 
 def main():
     eventos = cargar_dataset_eventos("dataset.json")  # dataset inicial con 100 muestras aleatorias
@@ -76,8 +81,9 @@ def main():
         print("3. Mostrar Caminos menos saltos entre origen / destino")        
         print("4. Mostrar Caminos más cortos (menos indicente) entre origen / destino") #iplementar en un futuro algortimo Dkjestra
         print("5. Procesar N cantidad de eventos: mostrar su info")
-        print("6. Metricas")
-        print("7. Salir")
+        print("6. Metricas metodos de busqueda")
+        print("7. Metricas metodos de ordenamiento")                
+        print("8. Salir")
         
         opcion = input("Seleccione una opción: ")
 
@@ -92,29 +98,14 @@ def main():
         elif opcion == "5":
             procesar_n_eventos(store)    
         elif opcion == "6":
-            motrar_mediciones(eventos)
+            mostrar_estadisticas_busqueda(eventos)
         elif opcion == "7":
+            mostrar_estadisticas_ordenamiento(eventos)
+        elif opcion == "8":
             print("Saliendo del programa...")
             break
         else:
             print("Opción inválida, intente de nuevo.") 
-    
-     
-    
-
-    #   
-    #mostramos los caminos con menos incidentes de un origen a destino
-    #print( f"Camino más corto (con menos incidentes) de A a B {store.camino_menos_saltos('A', 'B')}")
-    #print( f"Camino más corto (con menos incidentes) de B a F {store.camino_menos_saltos('B', 'F')}")
-
-    #mostramos los incidents por categoria
-    #prioridades = Event.getPrioridades()
-    #for indPrioridad, descPrioridad in prioridades.items():
-     #   store.eventos_por_prioridad(indPrioridad)
-
-    #mostrar_info_ordenamiento(store)
-
-            
     
 if __name__ == '__main__':
     try:

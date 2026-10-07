@@ -1,51 +1,4 @@
-Caso de aplicación para la Evaluación Integradora
-Plataforma de análisis de incidentes y rutas
-El siguiente caso se propone como escenario común para las dos partes de la evaluación integradora. A partir de este contexto, cada parte del trabajo abordará distintos problemas algorítmicos y estructuras estudiadas durante la materia.
-Una organización procesa eventos (incidentes) que contienen los siguientes campos: id, timestamp, categoría, prioridad, texto (descripción), origen y destino. 
-
-Con esta información se busca desarrollar herramientas que permitan analizar los incidentes y apoyar la toma de decisiones.
-
-En este marco, el sistema debe permitir:
-Almacenar y consultar eventos de forma eficiente,
-Buscar patrones en textos (alertas),
-Priorizar atención (colas/heap),
-Analizar red de rutas (grafos) y optimizar decisiones,
-
-Estimar costos y justificar decisiones con complejidad y mediciones,
-Y resguardar información sensible mediante encriptación (RSA a nivel demostrativo).
-La implementación debe realizarse en Python, utilizando las herramientas y enfoques trabajados durante el cursado, 
-e incluir pruebas y mediciones reproducibles que permitan verificar el funcionamiento de las soluciones propuestas.
-
-Entregables mínimos
-Diseño del sistema (POO + modularidad)
-Definir una arquitectura mínima con clases y módulos: Event, EventStore, Index, Router, TextAnalyzer.
-Incluir docstrings y breve justificación de decisiones de diseño.
- 
-Estructuras lineales (TDA + operaciones)
-Implementar y usar al menos dos:
-Stack o Queue (con collections.deque), y
-PriorityQueue (con heapq) para priorizar incidentes por severidad/tiempo.
-Explicar operaciones y complejidad.
- 
-Búsqueda/ordenamiento y medición
-Implementar y comparar:
-búsqueda secuencial vs binaria (con bisect para consulta indexada),
-dos ordenamientos entre: inserción / selección / burbuja / quicksort / mergesort,
-comparación con sorted() o list.sort().
-Medir con timeit sobre tamaños crecientes y analizar resultados (tiempo y, si aplica, memoria).
- 
-Hashing e índices
-Diseñar un índice por clave (por ejemplo, id, categoría o origen) usando: diccionarios de Python y/o tabla de dispersión implementada (opcional avanzada).
-Explicar colisiones (conceptualmente) y justificar elección.
- 
-Síntesis integradora (1 página) Responder:
-¿Qué decisiones de estructura/algoritmo mejoraron el rendimiento y por qué?
-¿Dónde aparece el trade-off "tiempo vs memoria" en el caso?
-¿Cómo se conectan POO + modularidad + estructuras + medición para construir software mantenible?
- 
-ANEXO obligatorio: Registro del uso de IAG según indicaciones generales (diálogos, fecha, herramienta y reflexión ética).
-
--------------------------
+------------------------
 
 Como funcionan los metodos sorted() o list.sort() en python
 
@@ -140,3 +93,95 @@ print(f"Tiempo de ejecución: {fin - inicio:.6f} segundos"
 
 2. La opción optimizada: List Comprehension (Copia por comprensión)Si buscas reducir el impacto de la copia en tus mediciones de tiempo y optimizar la velocidad, una comprensión de lista combinada con .copy() suele ser considerablemente más rápida que deepcopy. Funciona perfectamente siempre y cuando los valores dentro de los diccionarios no sean a su vez otras estructuras mutables (como sublistas o subdiccionarios)
 
+--------------
+Adopta el rol de profesional de informatica; y enseña las bases de encriptacion RSA-
+
+Bases de Encriptación RSA
+
+¡Hola! Soy profesional de informática y hoy vamos a desglosar uno de los algoritmos más importantes de la criptografía moderna: RSA. Lo explicaré paso a paso, desde los fundamentos matemáticos hasta un ejemplo práctico con números pequeños.
+
+1. ¿Qué es RSA?
+
+RSA (Rivest-Shamir-Adleman, 1977) es un algoritmo de criptografía asimétrica o de clave pública. Esto significa que utiliza dos claves distintas pero matemáticamente relacionadas:
+
+Clave pública: se comparte abiertamente. Sirve para cifrar mensajes.
+Clave privada: se mantiene en secreto. Sirve para descifrar mensajes.
+
+A diferencia de la criptografía simétrica (como AES), donde ambas partes comparten la misma clave, en RSA cualquiera puede cifrar un mensaje con tu clave pública, pero solo tú (con tu clave privada) puedes descifrarlo.
+
+2. Fundamentos matemáticos
+
+RSA se basa en tres conceptos clave de la teoría de números:
+
+a) Números primos
+
+Un número primo solo es divisible por 1 y por sí mismo (2, 3, 5, 7, 11, 13...).
+
+b) Función φ de Euler (phi)
+
+Para un número n = p * q (donde p y q son primos):
+
+φ(n) = (p - 1) * (q - 1)
+c) Aritmética modular
+
+La operación a mod n devuelve el resto de dividir a entre n.
+Ejemplo: 17 mod 5 = 2.
+
+d) El problema de la factorización
+
+La seguridad de RSA se basa en que factorizar un número muy grande (producto de dos primos enormes) es computacionalmente inviable con tecnología actual.
+
+3. Generación de claves (paso a paso)
+Elegir dos primos grandes: p y q.
+Calcular n: n = p * q → este será el módulo de ambas claves.
+Calcular φ(n): φ(n) = (p - 1) * (q - 1).
+Elegir e (exponente público): un entero tal que 1 < e < φ(n) y gcd(e, φ(n)) = 1 (coprimos). Comúnmente se usa e = 65537.
+Calcular d (exponente privado): el inverso modular de e módulo φ(n):
+   d * e ≡ 1 (mod φ(n))
+
+Resultado:
+
+Clave pública = (e, n)
+Clave privada = (d, n)
+4. Cifrado y descifrado
+
+Sea M el mensaje (convertido a número, M < n):
+
+Cifrar: C = M^e mod n
+Descifrar: M = C^d mod n
+5. Ejemplo práctico con números pequeños
+
+Vamos a cifrar el número M = 7.
+
+Paso 1 — Elegir primos:
+
+p = 11,  q = 13
+
+Paso 2 — Calcular n:
+
+n = 11 * 13 = 143
+
+Paso 3 — Calcular φ(n):
+
+φ(n) = (11 - 1) * (13 - 1) = 10 * 12 = 120
+
+Paso 4 — Elegir e:
+
+e = 7  (es coprimo con 120)
+
+Paso 5 — Calcular d (inverso modular de 7 mod 120):
+
+d = 103   (porque 7 * 103 = 721 = 6*120 + 1 ≡ 1 mod 120)
+
+Claves:
+
+Pública: (e=7, n=143)
+Privada: (d=103, n=143)
+
+Cifrar M = 7:
+
+C = 7^7 mod 143 = 823543 mod 143 = 123
+
+Descifrar C = 123:
+
+M = 123^103 mod 143 = 7  ✓
