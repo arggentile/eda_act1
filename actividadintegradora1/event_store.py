@@ -55,7 +55,7 @@ class EventStore:
         """ Muestra la información de todos los eventos almacenados. Recorre total O(n) """
         print(f"{'ID':<8}{'FECHA':<22}{'TIPO':<22}{'PRIO':<6}{'DESCRIPCION':<60}{'O':<4}{'D':<4}")
         print("-" * 126)
-        for e in eventos:
+        for e in self.eventos:
             print(f"{e.info()}")
         
 

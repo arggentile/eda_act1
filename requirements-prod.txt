@@ -3,3 +3,4 @@ openpyxl
 numpy
 matplotlib
 PyQt6
+sympy

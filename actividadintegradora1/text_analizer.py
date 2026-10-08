@@ -1,14 +1,12 @@
 from event import Event
 from metodos import *
 
-from scripts.grafos import Grafo
+from grafo import Grafo
 
 
 class TextAnalyzer:
     """
-    
-    
-    palabras: dict (hashing) por palabra como indice.  Tiempo O(1). 
+        palabras: dict (hashing) por palabra como indice.  Tiempo O(1). 
       Almacena la cantidad de frecuencias de la palabras
 
        y un diccionaro de idEvento, para contabilizar las apariciones en dicho evento
@@ -88,6 +86,7 @@ class TextAnalyzer:
     
     
     def n_palabras_mas_frecuentes(self, n=10):
+        """ retorna ua lista de dupla de palabra -> frecuncia"""
         return sorted(((p, d["cantidad"]) for p, d in self.palabras.items()),
                       key=lambda x: (-x[1], x[0]))[:n]
  
@@ -116,7 +115,7 @@ if __name__ == "__main__":
     
     textAnalizer = TextAnalyzer()
     for i, event in enumerate(eventos):
-        textAnalizer.procesar_texto(event.id, event.texto )
+        textAnalizer.procesar_texto(event.id_evento, event.texto )
 
     print("\n Cantidad de frecuenicas de las palabras:")
     print(f"{textAnalizer.mostrar_frecuenias_palabras()}")
