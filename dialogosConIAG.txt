@@ -1,5 +1,10 @@
+Se detalla a continuación los principales dialogos que se establecieron con la IA de Claude:
+
 ------------------------
---Peticion para armar dataset de datos --
+1) Peticion para armar dataset de datos --
+
+
+Respuesta IA:
 
 Actúa como un Ingeniero de Datos experto en la creación de datasets de alta fidelidad.
 Tu tarea es generar un dataset completo y realista en formato JSON que contenga exactamente 1000 entradas.
@@ -37,38 +42,11 @@ Sigue este formato exacto:
  }
 ]
 
+------------------------
+2) Cuales son los principales metodos de la libreria timeit en python pra medir tiempos:
 
------------------
-como pasar de un deque a una lista en python
+Respuesta IA:
 
-from collections import deque
-
-# Crear un deque
-mi_deque = deque([1, 2, 3, 4])
-
-# Convertir a lista
-mi_lista = list(mi_deque)
-
-print(mi_lista)  # Resultado: [1, 2, 3, 4]
-
---------
-y si quiero obtener los prrimeros N de la cola en una lista
-
-from collections import deque
-from itertools import islice
-
-cola = deque(["a", "b", "c", "d", "e"])
-n = 3
-
-# Copia los primeros N elementos sin modificar la cola
-primeros_n = list(islice(cola, n))
-
-print(primeros_n)  # Resultado: ['a', 'b', 'c']
-print(cola)        # La cola sigue igual: deque(['a', 'b', 'c', 'd', 'e'])
-
-
-----------------
-Cuales son los principales metodos de la libreria timeit en python pra medir tiempos
 La librería timeit de Python sirve para medir tiempos de ejecución de fragmentos pequeños de código de forma precisa. Estos son sus métodos principales:
 
 1. timeit.timeit()
@@ -94,51 +72,264 @@ Igual que timeit() pero repite la medición varias veces y devuelve una lista de
 python
 tiempos = timeit.repeat(stmt="sum(range(100))", number=1000, repeat=5)
 print(min(tiempos))
--------
-
-En que afecta el number si la cantidad de elementos es siempre la misma
-
-Buena pregunta, porque es una confusión muy común. number no cambia lo que hace tu código ni la cantidad de elementos que procesa. Lo que cambia es cuántas veces se ejecuta esa misma operación para poder medir con precisión.
-
-¿Por qué existe number?
-
-El problema es que operaciones pequeñas son demasiado rápidas para medirlas de forma confiable. Si sum(range(100)) tarda 0.000002 segundos, el reloj del sistema no tiene precisión suficiente y el resultado es ruido puro.
-
-La solución de timeit es ejecutar la operación muchas veces y medir el tiempo total, que sí es medible con precisión.
-
-python
-# sum(range(100)) se ejecuta 10.000 veces
-tiempo_total = timeit.timeit("sum(range(100))", number=10000)
-# tiempo_total ≈ 0.02 segundos (medible)
-
-tiempo_por_ejecucion = tiempo_total / 10000
-# ≈ 0.000002 segundos por llamada
-Entonces, ¿en qué te afecta?
-
-En dos cosas prácticas:
-
-1. Precisión de la medición
-
-number muy bajo → resultado poco confiable, dominado por ruido del sistema.
-number alto → promedio mucho más estable.
-
-2. Cuánto tarda el benchmark en terminar
-
-Si tu código tarda 1 segundo por ejecución y ponés number=1000000, vas a esperar 11 días.
-Si tu código tarda 1 microsegundo y ponés number=10, no vas a medir nada útil.
 
 
--------------
-Como funcionan los metodos sorted() o list.sort() en python:
+-----------------------------------------------
+3) Veo comportamientos extraños en timeit, como actua cada lista dentro de los metodos si envio la misma lista a y mido metodos de ordenamiento; se hace una copia
+de la estructura  metodos de :
 
-Cómo funcionan sorted() y list.sort() en Python
 
-Ambos ordenan elementos, pero tienen diferencias importantes.
+-----------------------------------------------
+3) Como funcionan los metodos sorted() o list.sort() en python, diferencias claves.
 
-Diferencia clave
+Respuesta IA:
 
 list.sort() ordena la lista in-place (modifica la original) y devuelve None. Solo funciona con listas.
 
 sorted() devuelve una nueva lista ordenada sin modificar el original. Funciona con cualquier iterable (listas, tuplas, strings, diccionarios, sets, generadores).
+python
+# list.sort() - modifica la lista original
+numeros = [3, 1, 4, 1, 5, 9, 2, 6]
+numeros.sort()
+print(numeros)  # [1, 1, 2, 3, 4, 5, 6, 9]
 
+# sorted() - devuelve una nueva lista
+numeros = [3, 1, 4, 1, 5, 9, 2, 6]
+ordenados = sorted(numeros)
+print(ordenados)  # [1, 1, 2, 3, 4, 5, 6, 9]
+print(numeros)    # [3, 1, 4, 1, 5, 9, 2, 6] (sin cambios)
+
+Parámetros
+
+Ambos aceptan los mismos dos parámetros opcionales:
+
+reverse: booleano para orden descendente.
+
+python
+sorted([3, 1, 4, 1, 5], reverse=True)  # [5, 4, 3, 1, 1]
+
+key: función que se aplica a cada elemento para decidir el criterio de orden.
+
+python
+palabras = ["banana", "kiwi", "manzana", "pera"]
+sorted(palabras, key=len)  # ['kiwi', 'pera', 'banana', 'manzana']
+
+# Ordenar tuplas por el segundo elemento
+datos = [("Ana", 30), ("Luis", 25), ("Eva", 28)]
+sorted(datos, key=lambda x: x[1])
+# [('Luis', 25), ('Eva', 28), ('Ana', 30)]
+
+El algoritmo: Timsort
+
+Por debajo, ambos usan Timsort, un algoritmo híbrido creado por Tim Peters en 2002 que combina merge sort e insertion sort. Aprovecha secuencias ya ordenadas ("runs") que aparecen naturalmente en los datos reales.
+
+Características:
+
+Estable: elementos con la misma clave mantienen su orden relativo original.
+Complejidad: O(n log n) en el peor caso, O(n) en el mejor (datos casi ordenados).
+Muy eficiente con datos parciales o previamente ordenados.
+Ejemplo de estabilidad
+python
+estudiantes = [("Ana", "B"), ("Luis", "A"), ("Eva", "B"), ("Juan", "A")]
+sorted(estudiantes, key=lambda x: x[1])
+# [('Luis', 'A'), ('Juan', 'A'), ('Ana', 'B'), ('Eva', 'B')]
+# Luis va antes que Juan porque estaba antes en la lista original
+¿Cuál usar?
+
+Usa list.sort() cuando no necesites conservar el orden original y trabajes con una lista (ahorra memoria). Usa sorted() cuando quieras preservar el original, o cuando trabajes con otro iterable como una tupla o un diccionario.
+
+
+-----------------
+4) Como pasar de un deque a una lista en python
+
+
+Respuesta de IA:
+
+from collections import deque
+
+# Crear un deque
+mi_deque = deque([1, 2, 3, 4])
+
+# Convertir a lista
+mi_lista = list(mi_deque)
+
+print(mi_lista)  # Resultado: [1, 2, 3, 4]
+
+--------
+y si quiero obtener los prrimeros N de la cola en una lista
+
+from collections import deque
+from itertools import islice
+
+cola = deque(["a", "b", "c", "d", "e"])
+n = 3
+
+------------------------------------------
+5) Adopta el rol de profesional de informatica; y enseña las bases de encriptacion RSA:
+
+Respuesta:
+
+Bases de Encriptación RSA
+
+¡Hola! Soy profesional de informática y hoy vamos a desglosar uno de los algoritmos más importantes de la criptografía moderna: RSA. Lo explicaré paso a paso, desde los fundamentos matemáticos hasta un ejemplo práctico con números pequeños.
+
+1. ¿Qué es RSA?
+
+RSA (Rivest-Shamir-Adleman, 1977) es un algoritmo de criptografía asimétrica o de clave pública. Esto significa que utiliza dos claves distintas pero matemáticamente relacionadas:
+
+Clave pública: se comparte abiertamente. Sirve para cifrar mensajes.
+Clave privada: se mantiene en secreto. Sirve para descifrar mensajes.
+
+A diferencia de la criptografía simétrica (como AES), donde ambas partes comparten la misma clave, en RSA cualquiera puede cifrar un mensaje con tu clave pública, pero solo tú (con tu clave privada) puedes descifrarlo.
+
+2. Fundamentos matemáticos
+
+RSA se basa en tres conceptos clave de la teoría de números:
+
+a) Números primos
+
+Un número primo solo es divisible por 1 y por sí mismo (2, 3, 5, 7, 11, 13...).
+
+b) Función φ de Euler (phi)
+
+Para un número n = p * q (donde p y q son primos):
+
+φ(n) = (p - 1) * (q - 1)
+c) Aritmética modular
+
+La operación a mod n devuelve el resto de dividir a entre n.
+Ejemplo: 17 mod 5 = 2.
+
+d) El problema de la factorización
+
+La seguridad de RSA se basa en que factorizar un número muy grande (producto de dos primos enormes) es computacionalmente inviable con tecnología actual.
+
+3. Generación de claves (paso a paso)
+Elegir dos primos grandes: p y q.
+Calcular n: n = p * q → este será el módulo de ambas claves.
+Calcular φ(n): φ(n) = (p - 1) * (q - 1).
+Elegir e (exponente público): un entero tal que 1 < e < φ(n) y gcd(e, φ(n)) = 1 (coprimos). Comúnmente se usa e = 65537.
+Calcular d (exponente privado): el inverso modular de e módulo φ(n):
+   d * e ≡ 1 (mod φ(n))
+
+Resultado:
+
+Clave pública = (e, n)
+Clave privada = (d, n)
+4. Cifrado y descifrado
+
+Sea M el mensaje (convertido a número, M < n):
+
+Cifrar: C = M^e mod n
+Descifrar: M = C^d mod n
+5. Ejemplo práctico con números pequeños
+
+Vamos a cifrar el número M = 7.
+
+Paso 1 — Elegir primos:
+
+p = 11,  q = 13
+
+Paso 2 — Calcular n:
+
+n = 11 * 13 = 143
+
+Paso 3 — Calcular φ(n):
+
+φ(n) = (11 - 1) * (13 - 1) = 10 * 12 = 120
+
+Paso 4 — Elegir e:
+
+e = 7  (es coprimo con 120)
+
+Paso 5 — Calcular d (inverso modular de 7 mod 120):
+
+d = 103   (porque 7 * 103 = 721 = 6*120 + 1 ≡ 1 mod 120)
+
+Claves:
+
+Pública: (e=7, n=143)
+Privada: (d=103, n=143)
+
+Cifrar M = 7:
+
+C = 7^7 mod 143 = 823543 mod 143 = 123
+
+Descifrar C = 123:
+
+M = 123^103 mod 143 = 7  ✓
+
+---------------------
+6) Quiero que em ordenes en una tabla las siguientes mediciones:
+
+Tiempo promedio de búsqueda para 50 eventos
+(promedio sobre 11 claves, 100 iteraciones c/u):
+  busqueda_secuencial     : 0.00009706 s
+  busqueda_binaria        : 0.00003741 s
+  busqueda_binaria_bisect : 0.00004441 s
+
+-----------------------------------------------------------------
+Tiempo promedio de búsqueda para 100 eventos
+(promedio sobre 11 claves, 100 iteraciones c/u):
+  busqueda_secuencial     : 0.00013169 s
+  busqueda_binaria        : 0.00004612 s
+  busqueda_binaria_bisect : 0.00004226 s
+
+-----------------------------------------------------------------
+Tiempo promedio de búsqueda para 250 eventos
+(promedio sobre 11 claves, 100 iteraciones c/u):
+  busqueda_secuencial     : 0.00035182 s
+  busqueda_binaria        : 0.00004426 s
+  busqueda_binaria_bisect : 0.00004406 s
+
+-----------------------------------------------------------------
+Tiempo promedio de búsqueda para 500 eventos
+(promedio sobre 11 claves, 100 iteraciones c/u):
+  busqueda_secuencial     : 0.00072854 s
+  busqueda_binaria        : 0.00006272 s
+  busqueda_binaria_bisect : 0.00004896 s
+
+-----------------------------------------------------------------
+Tiempo promedio de búsqueda para 1000 eventos
+(promedio sobre 11 claves, 100 iteraciones c/u):
+  busqueda_secuencial     : 0.00143928 s
+  busqueda_binaria        : 0.00007400 s
+  busqueda_binaria_bisect : 0.00005785 s
+
+
+  -----------------------------------------------------------------
+Tiempo de ejecución para 50 eventos (100 iteraciones c/u):
+  sorted()        : 0.00029784 s
+  list.sort()     : 0.00017648 s
+  bubble_sort     : 0.00024265 s
+  select_order    : 0.00379343 s
+
+-----------------------------------------------------------------
+Tiempo de ejecución para 100 eventos (100 iteraciones c/u):
+  sorted()        : 0.00075214 s
+  list.sort()     : 0.00034792 s
+  bubble_sort     : 0.00062236 s
+  select_order    : 0.01168201 s
+
+-----------------------------------------------------------------
+Tiempo de ejecución para 250 eventos (100 iteraciones c/u):
+  sorted()        : 0.00132164 s
+  list.sort()     : 0.00073047 s
+  bubble_sort     : 0.00258623 s
+  select_order    : 0.06988263 s
+
+-----------------------------------------------------------------
+Tiempo de ejecución para 500 eventos (100 iteraciones c/u):
+  sorted()        : 0.00282847 s
+  list.sort()     : 0.00149047 s
+  bubble_sort     : 0.00930494 s
+  select_order    : 0.35886413 s
+
+-----------------------------------------------------------------
+Tiempo de ejecución para 1000 eventos (100 iteraciones c/u):
+  sorted()        : 0.00610173 s
+  list.sort()     : 0.00316256 s
+  bubble_sort     : 0.03752538 s
+  select_order    : 1.55817065 s
+------------
 
